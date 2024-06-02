@@ -7,12 +7,12 @@
 [sub_resource type="Resource" id="Resource_dpcxm"]
 script = ExtResource("2_tqgad")
 text = "state_0"
-color = Color(1, 0, 0, 1)
+color = Color(0, 0.807843, 0, 1)
 
 [sub_resource type="Resource" id="Resource_086xb"]
 script = ExtResource("2_tqgad")
 text = "state_1"
-color = Color(1, 1, 0, 1)
+color = Color(0.988235, 0, 0, 1)
 
 [node name="CellAutoStudioEx2" type="Node2D"]
 
@@ -45,6 +45,18 @@ exec_code = "
 				future_state = state_1;
 			}
 "
+functions_code = "
+// FUNCTIONS CODE
+// Write all your functions here (in GLSL)
+// You can use the following global variables:
+//    uint WSX, WSY (global WorkSpace in X and Y)
+// Example
+// int your_function(int x, int y) {
+//    if (x == WSX/2 && y == WSY/2)
+//       return my_state_1
+//    else
+//       return my_state_2
+// }"
 
 [node name="Label" type="Label" parent="."]
 offset_left = 1.99993

@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://cn0dsh2q6mbwq"]
+[gd_scene load_steps=14 format=3 uid="uid://cn0dsh2q6mbwq"]
 
 [ext_resource type="Script" path="res://addons/cellular_automata_studio/cellular_automata_studio_2d.gd" id="1_g2lpm"]
 [ext_resource type="Script" path="res://examples/stand_alone.gd" id="1_k7f4v"]
@@ -31,23 +31,28 @@ noise = SubResource("FastNoiseLite_wghjs")
 
 [sub_resource type="Resource" id="Resource_l3xlw"]
 script = ExtResource("2_6c80k")
-text = "state_0"
-color = Color(1, 1, 1, 1)
+text = "ground"
+color = Color(0.357575, 0.273377, 0.202212, 1)
 
 [sub_resource type="Resource" id="Resource_skgpx"]
 script = ExtResource("2_6c80k")
-text = "state_1"
-color = Color(0, 0.764706, 0.768627, 1)
+text = "water"
+color = Color(9.43363e-06, 0.654528, 0.880101, 1)
 
 [sub_resource type="Resource" id="Resource_gmqwc"]
 script = ExtResource("2_6c80k")
-text = "state_2"
-color = Color(0.870588, 0, 0.901961, 1)
+text = "grass"
+color = Color(0.203399, 0.65254, 3.85046e-07, 1)
 
 [sub_resource type="Resource" id="Resource_hwxnk"]
 script = ExtResource("2_6c80k")
-text = "state_3"
-color = Color(0.717647, 0.701961, 0, 1)
+text = "fire"
+color = Color(0.943965, 0.608288, 1.92523e-06, 1)
+
+[sub_resource type="Resource" id="Resource_eltdg"]
+script = ExtResource("2_6c80k")
+text = "ashes"
+color = Color(0.152232, 0.0828771, 6.01634e-09, 1)
 
 [node name="VBoxMain" type="VBoxContainer"]
 anchors_preset = 15
@@ -70,12 +75,17 @@ size_flags_horizontal = 3
 [node name="OptionButton" type="OptionButton" parent="HBoxToolbar/HBoxContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 18
-item_count = 2
+item_count = 4
 selected = 1
 popup/item_0/text = "Blank grid"
 popup/item_0/id = 0
 popup/item_1/text = "Random grid"
 popup/item_1/id = 1
+popup/item_2/text = ""
+popup/item_2/id = 4
+popup/item_2/separator = true
+popup/item_3/text = "Custom"
+popup/item_3/id = 3
 
 [node name="ButtonCompile" type="Button" parent="HBoxToolbar/HBoxContainer"]
 layout_mode = 2
@@ -235,7 +245,7 @@ pause = true
 WSX = 512
 WSY = 512
 display_in = NodePath("../StandAlone/TextureRect")
-cell_states = Array[Object]([SubResource("Resource_l3xlw"), SubResource("Resource_skgpx"), SubResource("Resource_gmqwc"), SubResource("Resource_hwxnk")])
+cell_states = Array[Object]([SubResource("Resource_l3xlw"), SubResource("Resource_skgpx"), SubResource("Resource_gmqwc"), SubResource("Resource_hwxnk"), SubResource("Resource_eltdg")])
 init_code = "
 // INITIALISATION CODE (step = 0)
 // You can use the following variables:

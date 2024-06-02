@@ -36,6 +36,7 @@ var nb_passes		: int = 2
 //    uint x,y,p (cell position)
 //    int present_state (cell state. An integer random value from int.MIN and int.MAX)
 //    int future_state (the new cell state)
+
 """
 
 ## Write your execution code here (in GLSL)
@@ -46,6 +47,7 @@ var nb_passes		: int = 2
 //    uint x,y,p (cell position)
 //    int present_state (current cell state. Do not modify)
 //    int future_state (the new cell state)
+// STATES: 
 """
 
 ## Write your own functions here (in GLSL)
@@ -120,7 +122,7 @@ layout(binding = 0) buffer Params {
 
 """
 
-	var nb_buffers : int = 2
+	var nb_buffers : int = 3
 
 	# Create GLSL Header
 	GLSL_header += """
@@ -132,11 +134,20 @@ uint WSY="""+str(WSY)+""";
 layout(binding = 1) buffer Data0 {
 	int data_present[];
 };
+
 """
 	GLSL_header += """
 layout(binding = 2) buffer Data1 {
 	int data_future[];
 };
+
+"""
+
+	GLSL_header += """
+layout(binding = 3) buffer Data2 {
+	int data_count[];
+};
+
 """
 
 	var states_code : String = "" # States of cells
@@ -268,7 +279,7 @@ void main() {
 		uniform_params.binding = 0 # this needs to match the "binding" in our shader file
 		uniform_params.add_id(buffer_params)
 		
-		var nb_uniforms : int = 2
+		var nb_uniforms : int = 3
 		for b in nb_uniforms:
 			var uniform = RDUniform.new()
 			uniform.uniform_type = RenderingDevice.UNIFORM_TYPE_STORAGE_BUFFER
@@ -369,20 +380,37 @@ func _update_uniforms():
 func _reinit_matrix(m:int):
 	# Buffers from/for data (Sprite2D)
 	var input :PackedInt32Array = PackedInt32Array()
+	var inputc :PackedInt32Array = PackedInt32Array()
 	for i in range(WSX):
 		for j in range(WSY):
 			if m==0:
 				input.append(0x00000000)
+				inputc.append(0)
 			if m==1:
 				input.append(randi())
+				inputc.append(0)
+			if m==2:
+				input.append(1)
+				inputc.append(0)
+				
 	var input_bytes :PackedByteArray = input.to_byte_array()
+	var inputc_bytes :PackedByteArray = inputc.to_byte_array()
+	
 	buffers[0]=(rd.storage_buffer_create(input_bytes.size(), input_bytes))
+	buffers[2]=(rd.storage_buffer_create(inputc_bytes.size(), inputc_bytes))
+	
 	# Uniform
+	
 	var uniform = RDUniform.new()
 	uniform.uniform_type = RenderingDevice.UNIFORM_TYPE_STORAGE_BUFFER
 	uniform.binding = 1 # this needs to match the "binding" in our shader file
 	uniform.add_id(buffers[0])
 	bindings[1] = uniform
+	var uniform2 = RDUniform.new()
+	uniform2.uniform_type = RenderingDevice.UNIFORM_TYPE_STORAGE_BUFFER
+	uniform2.binding = 3 # this needs to match the "binding" in our shader file
+	uniform2.add_id(buffers[2])
+	bindings[3] = uniform2
 	# Set the new values from the CPU to the GPU
 	# Note: when changing the uniform set, use the same bindings Array (do not create a new Array)
 	uniform_set = rd.uniform_set_create(bindings, shader, 0)

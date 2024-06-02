@@ -1,0 +1,22 @@
+//INIT
+int n = abs(present_state);
+if(x+y%1000 >= 500)
+future_state = state_0;
+else
+future_state = state_1;
+
+//EXEC
+if (present_state == state_0) {
+	if(nb_neighbors_8(x,y,state_1) == 3) {
+		future_state = state_1;}
+}
+
+if (present_state == state_1) {
+	if(nb_neighbors_8(x,y,state_1) < 2) {
+		future_state = state_0;
+	}
+	else {
+		if(nb_neighbors_8(x,y,state_1) > 3 ) {
+			future_state = state_0;}
+			else{
+				future_state = state_1;}}}
