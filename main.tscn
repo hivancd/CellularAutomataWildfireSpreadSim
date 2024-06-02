@@ -123,15 +123,20 @@ layout_mode = 2
 theme_override_font_sizes/font_size = 18
 text = " Cellular Automata Studio (standalone version 1.0) "
 
-[node name="StandAlone" type="HSplitContainer" parent="."]
+[node name="VSplitContainer" type="VSplitContainer" parent="."]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="VBoxCode" type="VBoxContainer" parent="StandAlone"]
+[node name="StandAlone" type="HSplitContainer" parent="VSplitContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="VBoxCode" type="VBoxContainer" parent="VSplitContainer/StandAlone"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="TextEditInit" type="TextEdit" parent="StandAlone/VBoxCode"]
+[node name="TextEditInit" type="TextEdit" parent="VSplitContainer/StandAlone/VBoxCode"]
+custom_minimum_size = Vector2(128, 256)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -144,7 +149,7 @@ placeholder_text = "// INITIALISATION CODE (step = 0)
 //    int future_state (the new cell state)"
 syntax_highlighter = SubResource("CodeHighlighter_diay8")
 
-[node name="TextEditExec" type="TextEdit" parent="StandAlone/VBoxCode"]
+[node name="TextEditExec" type="TextEdit" parent="VSplitContainer/StandAlone/VBoxCode"]
 visible = false
 layout_mode = 2
 size_flags_horizontal = 3
@@ -159,7 +164,7 @@ placeholder_text = "// EXECUTION CODE (step >= 1)
 //    int future_state (the new cell state)"
 syntax_highlighter = SubResource("CodeHighlighter_1sujs")
 
-[node name="TextEditFunc" type="TextEdit" parent="StandAlone/VBoxCode"]
+[node name="TextEditFunc" type="TextEdit" parent="VSplitContainer/StandAlone/VBoxCode"]
 visible = false
 layout_mode = 2
 size_flags_horizontal = 3
@@ -180,12 +185,20 @@ placeholder_text = "// FUNCTIONS CODE
 "
 syntax_highlighter = SubResource("CodeHighlighter_8t2bd")
 
-[node name="TextureRect" type="TextureRect" parent="StandAlone"]
+[node name="TextureRect" type="TextureRect" parent="VSplitContainer/StandAlone"]
+custom_minimum_size = Vector2(256, 256)
 layout_mode = 2
 size_flags_horizontal = 3
 texture = SubResource("NoiseTexture2D_0uf6p")
+expand_mode = 1
 
-[node name="LabelErrors" type="RichTextLabel" parent="."]
+[node name="TextEdit" type="TextEdit" parent="VSplitContainer"]
+custom_minimum_size = Vector2(0, 100)
+layout_mode = 2
+editable = false
+
+[node name="LabelErrors" type="RichTextLabel" parent="VSplitContainer"]
+visible = false
 clip_contents = false
 custom_minimum_size = Vector2(0, 80)
 layout_mode = 2
@@ -205,7 +218,7 @@ print_generated_code = true
 pause = true
 WSX = 512
 WSY = 512
-display_in = NodePath("../StandAlone/TextureRect")
+display_in = NodePath("../VSplitContainer/StandAlone/TextureRect")
 cell_states = Array[Object]([SubResource("Resource_l3xlw"), SubResource("Resource_skgpx"), SubResource("Resource_gmqwc"), SubResource("Resource_hwxnk"), SubResource("Resource_eltdg")])
 init_code = "
 // INITIALISATION CODE (step = 0)
