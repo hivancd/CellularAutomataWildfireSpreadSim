@@ -34,14 +34,14 @@ func _on_button_compile_pressed():
 func _on_option_button_2_item_selected(index):
 	match index:
 		0:
-			$StandAlone/VBoxCode/TextEditInit.visible = true
-			$StandAlone/VBoxCode/TextEditExec .visible = false
-			$StandAlone/VBoxCode/TextEditFunc.visible= false
+			$VSplitContainer/StandAlone/VBoxCode/TextEditInit.visible = true
+			$VSplitContainer/StandAlone/VBoxCode/TextEditExec.visible = false
+			$VSplitContainer/StandAlone/VBoxCode/TextEditFunc.visible = false
 		1:
-			$StandAlone/VBoxCode/TextEditInit.visible = false
-			$StandAlone/VBoxCode/TextEditExec .visible = true
-			$StandAlone/VBoxCode/TextEditFunc.visible= false
+			$VSplitContainer/StandAlone/VBoxCode/TextEditInit.visible = false
+			$VSplitContainer/StandAlone/VBoxCode/TextEditExec.visible = true
+			$VSplitContainer/StandAlone/VBoxCode/TextEditFunc.visible = false
 		2:
-			$StandAlone/VBoxCode/TextEditInit.visible = false
-			$StandAlone/VBoxCode/TextEditExec .visible = false
-			$StandAlone/VBoxCode/TextEditFunc.visible= true
+			$VSplitContainer/StandAlone/VBoxCode/TextEditInit.visible = false
+			$VSplitContainer/StandAlone/VBoxCode/TextEditExec.visible = false
+			$VSplitContainer/StandAlone/VBoxCode/TextEditFunc.visible = true
