@@ -31,12 +31,12 @@ noise = SubResource("FastNoiseLite_wghjs")
 
 [sub_resource type="Resource" id="Resource_l3xlw"]
 script = ExtResource("2_6c80k")
-text = "ground"
+text = "state_0"
 color = Color(0.357575, 0.273377, 0.202212, 1)
 
 [sub_resource type="Resource" id="Resource_skgpx"]
 script = ExtResource("2_6c80k")
-text = "water"
+text = "state_1"
 color = Color(9.43363e-06, 0.654528, 0.880101, 1)
 
 [sub_resource type="Resource" id="Resource_gmqwc"]
@@ -82,10 +82,22 @@ popup/item_0/id = 0
 popup/item_1/text = "Random grid"
 popup/item_1/id = 1
 popup/item_2/text = ""
-popup/item_2/id = 4
+popup/item_2/id = 3
 popup/item_2/separator = true
 popup/item_3/text = "Custom"
-popup/item_3/id = 3
+popup/item_3/id = 2
+
+[node name="OptionButton2" type="OptionButton" parent="HBoxToolbar/HBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+item_count = 3
+selected = 0
+popup/item_0/text = "INIT"
+popup/item_0/id = 0
+popup/item_1/text = "EXEC"
+popup/item_1/id = 1
+popup/item_2/text = "FUNC"
+popup/item_2/id = 2
 
 [node name="ButtonCompile" type="Button" parent="HBoxToolbar/HBoxContainer"]
 layout_mode = 2
@@ -119,93 +131,42 @@ size_flags_vertical = 3
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="VSplitContainer2" type="VSplitContainer" parent="StandAlone/VBoxCode"]
-layout_mode = 2
-size_flags_vertical = 3
-
-[node name="VSplitContainer" type="VSplitContainer" parent="StandAlone/VBoxCode/VSplitContainer2"]
-layout_mode = 2
-size_flags_vertical = 3
-
-[node name="VBoxContainer" type="VBoxContainer" parent="StandAlone/VBoxCode/VSplitContainer2/VSplitContainer"]
-layout_mode = 2
-size_flags_vertical = 3
-
-[node name="Label" type="Label" parent="StandAlone/VBoxCode/VSplitContainer2/VSplitContainer/VBoxContainer"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 18
-text = "Initialisation"
-horizontal_alignment = 1
-
-[node name="TextEditInit" type="TextEdit" parent="StandAlone/VBoxCode/VSplitContainer2/VSplitContainer/VBoxContainer"]
+[node name="TextEditInit" type="TextEdit" parent="StandAlone/VBoxCode"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_font_sizes/font_size = 18
-text = "int state = abs( present_state ) % 4 ;
-if(state == 0)
-	future_state = state_0;
-if(state == 1)
-	future_state = state_1;
-if(state == 2)
-	future_state = state_2;
-if(state == 3)
-	future_state = state_3;
-"
+placeholder_text = "// INITIALISATION CODE (step = 0)
+// You will use the following variables:
+//    uint WSX, WSY (global WorkSpace in X and Y)
+//    uint x,y,p (cell position)
+//    int present_state (cell state. An integer random value from int.MIN and int.MAX)
+//    int future_state (the new cell state)"
 syntax_highlighter = SubResource("CodeHighlighter_diay8")
 
-[node name="VBoxContainer2" type="VBoxContainer" parent="StandAlone/VBoxCode/VSplitContainer2/VSplitContainer"]
-layout_mode = 2
-size_flags_vertical = 3
-
-[node name="Label2" type="Label" parent="StandAlone/VBoxCode/VSplitContainer2/VSplitContainer/VBoxContainer2"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 18
-text = "Execution"
-horizontal_alignment = 1
-
-[node name="TextEditExec" type="TextEdit" parent="StandAlone/VBoxCode/VSplitContainer2/VSplitContainer/VBoxContainer2"]
+[node name="TextEditExec" type="TextEdit" parent="StandAlone/VBoxCode"]
+visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 size_flags_stretch_ratio = 2.0
 theme_override_font_sizes/font_size = 18
-text = "if (present_state == state_0) {
-	uint nb_1 = nb_neighbors_8(x,y,state_1);
-	if ( nb_1 >= 3)	future_state = state_1;
-}
-if (present_state == state_1) {
-	uint nb_2 = nb_neighbors_8(x,y,state_2);
-	if ( nb_2 >= 3)	future_state = state_2;
-}
-if (present_state == state_2) {
-	uint nb_3 = nb_neighbors_8(x,y,state_3);
-	if ( nb_3 >= 3)	future_state = state_3;
-}
-if (present_state == state_3) {
-	uint nb_0 = nb_neighbors_8(x,y,state_0);
-	if ( nb_0 >= 3)	future_state = state_0;
-}
-"
+placeholder_text = "// EXECUTION CODE (step >= 1)
+// You will use the following variables:
+//    uint WSX, WSY (global WorkSpace in X and Y)
+//    uint x,y,p (cell position)
+//    int present_state (current cell state. Do not modify)
+//    int future_state (the new cell state)"
 syntax_highlighter = SubResource("CodeHighlighter_1sujs")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="StandAlone/VBoxCode/VSplitContainer2"]
-layout_mode = 2
-size_flags_vertical = 3
-
-[node name="Label3" type="Label" parent="StandAlone/VBoxCode/VSplitContainer2/VBoxContainer"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 18
-text = "Functions"
-horizontal_alignment = 1
-
-[node name="TextEditFunc" type="TextEdit" parent="StandAlone/VBoxCode/VSplitContainer2/VBoxContainer"]
+[node name="TextEditFunc" type="TextEdit" parent="StandAlone/VBoxCode"]
+visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 size_flags_stretch_ratio = 2.0
 theme_override_font_sizes/font_size = 18
-text = "// FUNCTIONS CODE
+placeholder_text = "// FUNCTIONS CODE
 // Write all your functions here in GLSL
 // You can use the following global variables:
 //    uint WSX, WSY : global WorkSpace in X and Y
@@ -263,6 +224,7 @@ exec_code = "
 //    int future_state (the new cell state)
 "
 
+[connection signal="item_selected" from="HBoxToolbar/HBoxContainer/OptionButton2" to="." method="_on_option_button_2_item_selected"]
 [connection signal="pressed" from="HBoxToolbar/HBoxContainer/ButtonCompile" to="." method="_on_button_compile_pressed"]
 [connection signal="pressed" from="HBoxToolbar/HBoxContainer/ButtonStep" to="CellularAutomata2D" method="_on_button_step"]
 [connection signal="pressed" from="HBoxToolbar/HBoxContainer/ButtonExec" to="CellularAutomata2D" method="_on_button_play"]

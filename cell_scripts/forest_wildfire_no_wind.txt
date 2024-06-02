@@ -29,6 +29,6 @@ if (present_state==fire)
 //FUNCT
 float f_rand()
 {
-    return ((float(rand()) / RAND_MAX * 2 - 1)+1)/2;
-    // generates random number in range [0, 1] with uniform distribution
+	return ((float(rand()) / RAND_MAX * 2 - 1)+1)/2;
+	// generates random number in range [0, 1] with uniform distribution
 }

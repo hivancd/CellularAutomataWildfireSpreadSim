@@ -16,9 +16,9 @@ func _on_button_compile_pressed():
 	
 	$CellularAutomata2D._reinit_matrix(m)
 
-	var init_code = $StandAlone/VBoxCode/VSplitContainer2/VSplitContainer/VBoxContainer/TextEditInit.text
-	var exec_code = $StandAlone/VBoxCode/VSplitContainer2/VSplitContainer/VBoxContainer2/TextEditExec.text
-	var functions_code = $StandAlone/VBoxCode/VSplitContainer2/VBoxContainer/TextEditFunc.text
+	var init_code = $StandAlone/VBoxCode/TextEditInit.text
+	var exec_code = $StandAlone/VBoxCode/TextEditExec.text
+	var functions_code = $StandAlone/VBoxCode/TextEditFunc.text
 	
 	$CellularAutomata2D.pause = true
 	$CellularAutomata2D.cleanup_gpu()
@@ -28,3 +28,19 @@ func _on_button_compile_pressed():
 	$CellularAutomata2D.display_all_values()
 	
 	$LabelErrors.text = $CellularAutomata2D.err_msg
+
+
+func _on_option_button_2_item_selected(index):
+	match index:
+		0:
+			$StandAlone/VBoxCode/TextEditInit.visible = true
+			$StandAlone/VBoxCode/TextEditExec .visible = false
+			$StandAlone/VBoxCode/TextEditFunc.visible= false
+		1:
+			$StandAlone/VBoxCode/TextEditInit.visible = false
+			$StandAlone/VBoxCode/TextEditExec .visible = true
+			$StandAlone/VBoxCode/TextEditFunc.visible= false
+		2:
+			$StandAlone/VBoxCode/TextEditInit.visible = false
+			$StandAlone/VBoxCode/TextEditExec .visible = false
+			$StandAlone/VBoxCode/TextEditFunc.visible= true
