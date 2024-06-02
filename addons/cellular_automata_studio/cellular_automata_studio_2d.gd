@@ -381,6 +381,10 @@ func _reinit_matrix(m:int):
 	# Buffers from/for data (Sprite2D)
 	var input :PackedInt32Array = PackedInt32Array()
 	var inputc :PackedInt32Array = PackedInt32Array()
+	
+	var loaded = false
+	var data = ""
+	
 	for i in range(WSX):
 		for j in range(WSY):
 			if m==0:
@@ -390,7 +394,10 @@ func _reinit_matrix(m:int):
 				input.append(randi())
 				inputc.append(0)
 			if m==2:
-				input.append(1)
+				if not loaded:
+					data = FileAccess.open("res://terrain_generator/map.txt", FileAccess.READ).get_as_text()
+					loaded = true
+				input.append(int(data[i+j*WSX]))
 				inputc.append(0)
 				
 	var input_bytes :PackedByteArray = input.to_byte_array()

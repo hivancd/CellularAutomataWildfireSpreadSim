@@ -31,12 +31,12 @@ noise = SubResource("FastNoiseLite_wghjs")
 
 [sub_resource type="Resource" id="Resource_l3xlw"]
 script = ExtResource("2_6c80k")
-text = "state_0"
+text = "ground"
 color = Color(0.357575, 0.273377, 0.202212, 1)
 
 [sub_resource type="Resource" id="Resource_skgpx"]
 script = ExtResource("2_6c80k")
-text = "state_1"
+text = "water"
 color = Color(9.43363e-06, 0.654528, 0.880101, 1)
 
 [sub_resource type="Resource" id="Resource_gmqwc"]
@@ -75,17 +75,14 @@ size_flags_horizontal = 3
 [node name="OptionButton" type="OptionButton" parent="HBoxToolbar/HBoxContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 18
-item_count = 4
+item_count = 3
 selected = 1
 popup/item_0/text = "Blank grid"
 popup/item_0/id = 0
 popup/item_1/text = "Random grid"
 popup/item_1/id = 1
-popup/item_2/text = ""
-popup/item_2/id = 3
-popup/item_2/separator = true
-popup/item_3/text = "Custom"
-popup/item_3/id = 2
+popup/item_2/text = "Custom"
+popup/item_2/id = 2
 
 [node name="OptionButton2" type="OptionButton" parent="HBoxToolbar/HBoxContainer"]
 layout_mode = 2
@@ -141,6 +138,16 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_font_sizes/font_size = 18
+text = "if (present_state==0)
+	future_state=ground;
+if (present_state==1)
+	future_state=water;
+if (present_state==2){
+	future_state=grass;
+	data_count[p] = 37;}
+if (x==128 && y==115){
+	future_state=fire;
+	data_count[p]=38;}"
 placeholder_text = "// INITIALISATION CODE (step = 0)
 // You will use the following variables:
 //    uint WSX, WSY (global WorkSpace in X and Y)
@@ -156,12 +163,30 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 size_flags_stretch_ratio = 2.0
 theme_override_font_sizes/font_size = 18
+text = "//EXEC
+int grassh_count = 37;
+int fire_duration = 1000;
+
+if (present_state==grass){
+	if (data_count[p]<=0)
+		{future_state=fire;
+		data_count[p]=fire_duration;}
+	else
+		data_count[p]=data_count[p]-int(nb_neighbors_8(x,y,fire));
+}
+
+if (present_state==fire)
+	if (data_count[p]<=0){
+	future_state=ashes;}
+	else data_count[p]=data_count[p]-1;
+"
 placeholder_text = "// EXECUTION CODE (step >= 1)
 // You will use the following variables:
 //    uint WSX, WSY (global WorkSpace in X and Y)
 //    uint x,y,p (cell position)
 //    int present_state (current cell state. Do not modify)
 //    int future_state (the new cell state)"
+scroll_vertical = 17.0
 syntax_highlighter = SubResource("CodeHighlighter_1sujs")
 
 [node name="TextEditFunc" type="TextEdit" parent="VSplitContainer/StandAlone/VBoxCode"]
@@ -214,10 +239,9 @@ text = "Output :
 [node name="CellularAutomata2D" type="Node" parent="." node_paths=PackedStringArray("display_in")]
 script = ExtResource("1_g2lpm")
 print_step = true
-print_generated_code = true
 pause = true
-WSX = 512
-WSY = 512
+WSX = 256
+WSY = 256
 display_in = NodePath("../VSplitContainer/StandAlone/TextureRect")
 cell_states = Array[Object]([SubResource("Resource_l3xlw"), SubResource("Resource_skgpx"), SubResource("Resource_gmqwc"), SubResource("Resource_hwxnk"), SubResource("Resource_eltdg")])
 init_code = "
