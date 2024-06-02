@@ -1,8 +1,0 @@
-[gd_scene load_steps=2 format=3 uid="uid://dk0s5u3081fsl"]
-
-[ext_resource type="Script" path="res://addons/cellular_automata_studio/cellular_automata_studio_2d.gd" id="1_422k2"]
-
-[node name="Fs1" type="Node2D"]
-
-[node name="CellularAutomata2D" type="Node" parent="."]
-script = ExtResource("1_422k2")
