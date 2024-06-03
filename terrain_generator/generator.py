@@ -12,6 +12,7 @@ from modules.utilities import is_integer, print_progress
 
 from PIL import Image
 
+
 def cos_similarity(v1, v2):
     dot_product = 0
     norm_v1 = 0
@@ -22,81 +23,84 @@ def cos_similarity(v1, v2):
         norm_v2 += v2[i] ** 2
     return dot_product / ((norm_v1 * norm_v2) ** 0.5)
 
+
 def distance(v1, v2):
     return sum([(v1[i] - v2[i]) ** 2 for i in range(len(v1))]) ** 0.5
 
+
 def get_base_color(pixel):
     base_colors = [
-        (89, 93, 66),
-        (30, 144, 235),
-        (57, 102, 21),
+        (89, 93, 66),  # ground
+        (30, 144, 235),  # water
+        (57, 102, 21),  # forest
+        (160, 173, 120),  # grass
+        (128, 168, 104),  # grass
     ]
-    pixel = [pixel[0]/255, pixel[1]/255, pixel[2]/255]
+    pixel = [pixel[0] / 255, pixel[1] / 255, pixel[2] / 255]
     max_similarity = 0
     closest_color = 0
     for color, i in zip(base_colors, range(len(base_colors))):
-        color = [color[0]/255, color[1]/255, color[2]/255]
+        color = [color[0] / 255, color[1] / 255, color[2] / 255]
         similarity = cos_similarity(pixel, color) - distance(pixel, color)
         if similarity > max_similarity:
             max_similarity = similarity
-            closest_color = i
+            closest_color = i + 1
     return closest_color
 
-def create_map_ppm(filename,w,h, seed):
-    
-    print_progress_opt = ("idlelib" not in sys.modules)
-    
-    if seed==None:
+
+def create_map_ppm(filename, w, h, seed):
+
+    print_progress_opt = "idlelib" not in sys.modules
+
+    if seed == None:
         seed = Seed()
-    
+
     print("Seed of the map : " + str(seed) + "\n")
     encyclopedia = encyclopedia_creation()
 
-    destination_file = open(filename+".ppm", "w")
+    destination_file = open(filename + ".ppm", "w")
     write_image_header(destination_file, h, w, str(seed))
-    
-    for line_number in range(h):    # L'image se crée ligne par ligne
+
+    for line_number in range(h):  # L'image se crée ligne par ligne
 
         chunk = BoardBox.create_empty_board(w, 1)
 
         for column_number in range(w):
 
             chunk.set_element(
-                value=generate_box(
-                    encyclopedia,
-                    column_number,
-                    line_number,
-                    seed
-                ),
+                value=generate_box(encyclopedia, column_number, line_number, seed),
                 x=column_number,
-                y=0
+                y=0,
             )
 
         write_image_body(destination_file, chunk)
 
         if print_progress_opt:
-            print_progress(
-                "Creation of the map : ", (line_number + 1) / h)
+            print_progress("Creation of the map : ", (line_number + 1) / h)
 
     destination_file.close()
     print("")
     print("Done")
 
+
 def create_map_txt(f_name):
-    im = Image.open(f_name+".ppm")  # Can be many different formats.
+    im = Image.open(f_name + ".ppm")  # Can be many different formats.
+    # im.save("map.png")
     array_result = []
     for j in range(0, im.size[1]):
         for i in range(0, im.size[0]):
             array_result.append(get_base_color(im.getpixel((i, j))))
 
-    file = open(f_name+".txt", "w")
+    file = open(f_name + ".txt", "w")
 
     for line in array_result:
         file.write(str(line))
-    
+
+
 def create_map(w, h, seed=None):
     create_map_ppm("map", w, h, seed)
     create_map_txt("map")
+
 
 print("asdasd")
 x = int(sys.argv[1])

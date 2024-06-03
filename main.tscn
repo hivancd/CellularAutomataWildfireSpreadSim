@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://cp4pyravsv5lt"]
+[gd_scene load_steps=15 format=3 uid="uid://cp4pyravsv5lt"]
 
 [ext_resource type="Script" path="res://addons/cellular_automata_studio/cellular_automata_studio_2d.gd" id="1_g2lpm"]
 [ext_resource type="Script" path="res://examples/stand_alone.gd" id="1_k7f4v"]
@@ -29,6 +29,11 @@ frequency = 0.6163
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_0uf6p"]
 noise = SubResource("FastNoiseLite_wghjs")
 
+[sub_resource type="Resource" id="Resource_hwxnk"]
+script = ExtResource("2_6c80k")
+text = "fire"
+color = Color(0.943965, 0.608288, 1.92523e-06, 1)
+
 [sub_resource type="Resource" id="Resource_l3xlw"]
 script = ExtResource("2_6c80k")
 text = "ground"
@@ -41,13 +46,13 @@ color = Color(9.43363e-06, 0.654528, 0.880101, 1)
 
 [sub_resource type="Resource" id="Resource_gmqwc"]
 script = ExtResource("2_6c80k")
-text = "grass"
-color = Color(0.203399, 0.65254, 3.85046e-07, 1)
+text = "forest"
+color = Color(0.0980392, 0.368627, 0, 1)
 
-[sub_resource type="Resource" id="Resource_hwxnk"]
+[sub_resource type="Resource" id="Resource_wcrw8"]
 script = ExtResource("2_6c80k")
-text = "fire"
-color = Color(0.943965, 0.608288, 1.92523e-06, 1)
+text = "grass"
+color = Color(0.392157, 0.596078, 0, 1)
 
 [sub_resource type="Resource" id="Resource_eltdg"]
 script = ExtResource("2_6c80k")
@@ -241,10 +246,10 @@ text = "Output :
 script = ExtResource("1_g2lpm")
 print_step = true
 pause = true
-WSX = 32
-WSY = 32
+WSX = 256
+WSY = 256
 display_in = NodePath("../VSplitContainer/StandAlone/TextureRect")
-cell_states = Array[Object]([SubResource("Resource_l3xlw"), SubResource("Resource_skgpx"), SubResource("Resource_gmqwc"), SubResource("Resource_hwxnk"), SubResource("Resource_eltdg")])
+cell_states = Array[Object]([SubResource("Resource_hwxnk"), SubResource("Resource_l3xlw"), SubResource("Resource_skgpx"), SubResource("Resource_gmqwc"), SubResource("Resource_wcrw8"), SubResource("Resource_eltdg")])
 init_code = "
 // INITIALISATION CODE (step = 0)
 // You can use the following variables:
