@@ -395,7 +395,15 @@ func _reinit_matrix(m:int):
 				inputc.append(0)
 			if m==2:
 				if not loaded:
-					data = FileAccess.open("res://terrain_generator/map.txt", FileAccess.READ).get_as_text()
+					var output = []
+					var global_paath = ProjectSettings.globalize_path("res://terrain_generator")
+					print(global_paath)
+					var ERR = OS.execute("python3",["./terrain_generator/generator.py", str(WSX), str(WSY)], output, true)
+					print(ERR)
+					#var exitp = OS.execute("python3",["/terrain_generator/generator.py", str(WSX), str(WSY)], output)
+					#print(exitp)
+					print(output)
+					data = FileAccess.open("res://map.txt", FileAccess.READ).get_as_text()
 					loaded = true
 				input.append(int(data[i+j*WSX]))
 				inputc.append(0)
