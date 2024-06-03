@@ -32,7 +32,7 @@ noise = SubResource("FastNoiseLite_wghjs")
 [sub_resource type="Resource" id="Resource_l3xlw"]
 script = ExtResource("2_6c80k")
 text = "ground"
-color = Color(0.357575, 0.273377, 0.202212, 1)
+color = Color(0.655483, 0.422915, 0.16618, 1)
 
 [sub_resource type="Resource" id="Resource_skgpx"]
 script = ExtResource("2_6c80k")
@@ -52,7 +52,7 @@ color = Color(0.943965, 0.608288, 1.92523e-06, 1)
 [sub_resource type="Resource" id="Resource_eltdg"]
 script = ExtResource("2_6c80k")
 text = "ashes"
-color = Color(0.152232, 0.0828771, 6.01634e-09, 1)
+color = Color(0.0807833, 0.0807833, 0.0807833, 1)
 
 [node name="VBoxMain" type="VBoxContainer"]
 anchors_preset = 15
@@ -75,14 +75,16 @@ size_flags_horizontal = 3
 [node name="OptionButton" type="OptionButton" parent="HBoxToolbar/HBoxContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 18
-item_count = 3
+item_count = 4
 selected = 1
 popup/item_0/text = "Blank grid"
 popup/item_0/id = 0
 popup/item_1/text = "Random grid"
 popup/item_1/id = 1
-popup/item_2/text = "Custom"
+popup/item_2/text = "Procedural"
 popup/item_2/id = 2
+popup/item_3/text = "Custom"
+popup/item_3/id = 3
 
 [node name="OptionButton2" type="OptionButton" parent="HBoxToolbar/HBoxContainer"]
 layout_mode = 2
@@ -186,7 +188,6 @@ placeholder_text = "// EXECUTION CODE (step >= 1)
 //    uint x,y,p (cell position)
 //    int present_state (current cell state. Do not modify)
 //    int future_state (the new cell state)"
-scroll_vertical = 17.0
 syntax_highlighter = SubResource("CodeHighlighter_1sujs")
 
 [node name="TextEditFunc" type="TextEdit" parent="VSplitContainer/StandAlone/VBoxCode"]
@@ -240,8 +241,8 @@ text = "Output :
 script = ExtResource("1_g2lpm")
 print_step = true
 pause = true
-WSX = 256
-WSY = 256
+WSX = 32
+WSY = 32
 display_in = NodePath("../VSplitContainer/StandAlone/TextureRect")
 cell_states = Array[Object]([SubResource("Resource_l3xlw"), SubResource("Resource_skgpx"), SubResource("Resource_gmqwc"), SubResource("Resource_hwxnk"), SubResource("Resource_eltdg")])
 init_code = "

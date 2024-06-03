@@ -15,7 +15,7 @@ func _on_button_compile_pressed():
 		m=1
 	
 	$CellularAutomata2D._reinit_matrix(m)
-
+	
 	var init_code = $VSplitContainer/StandAlone/VBoxCode/TextEditInit .text
 	var exec_code = $VSplitContainer/StandAlone/VBoxCode/TextEditExec.text
 	var functions_code = $VSplitContainer/StandAlone/VBoxCode/TextEditFunc.text

@@ -10,7 +10,39 @@ from modules.image_creation import write_image_header, write_image_body
 from modules.trees_generation import generate_trees
 from modules.utilities import is_integer, print_progress
 
-def create_map(filename,w,h, seed=None):
+from PIL import Image
+
+def cos_similarity(v1, v2):
+    dot_product = 0
+    norm_v1 = 0
+    norm_v2 = 0
+    for i in range(len(v1)):
+        dot_product += v1[i] * v2[i]
+        norm_v1 += v1[i] ** 2
+        norm_v2 += v2[i] ** 2
+    return dot_product / ((norm_v1 * norm_v2) ** 0.5)
+
+def distance(v1, v2):
+    return sum([(v1[i] - v2[i]) ** 2 for i in range(len(v1))]) ** 0.5
+
+def get_base_color(pixel):
+    base_colors = [
+        (89, 93, 66),
+        (30, 144, 235),
+        (57, 102, 21),
+    ]
+    pixel = [pixel[0]/255, pixel[1]/255, pixel[2]/255]
+    max_similarity = 0
+    closest_color = 0
+    for color, i in zip(base_colors, range(len(base_colors))):
+        color = [color[0]/255, color[1]/255, color[2]/255]
+        similarity = cos_similarity(pixel, color) - distance(pixel, color)
+        if similarity > max_similarity:
+            max_similarity = similarity
+            closest_color = i
+    return closest_color
+
+def create_map_ppm(filename,w,h, seed):
     
     print_progress_opt = ("idlelib" not in sys.modules)
     
@@ -49,7 +81,24 @@ def create_map(filename,w,h, seed=None):
     destination_file.close()
     print("")
     print("Done")
+
+def create_map_txt(f_name):
+    im = Image.open(f_name+".ppm")  # Can be many different formats.
+    array_result = []
+    for j in range(0, im.size[1]):
+        for i in range(0, im.size[0]):
+            array_result.append(get_base_color(im.getpixel((i, j))))
+
+    file = open(f_name+".txt", "w")
+
+    for line in array_result:
+        file.write(str(line))
     
-os.system("mkdir maps")
-for i in range(5):
-    create_map("./maps/map"+str(i),256,256)
+def create_map(w, h, seed=None):
+    create_map_ppm("map", w, h, seed)
+    create_map_txt("map")
+
+print("asdasd")
+x = int(sys.argv[1])
+y = int(sys.argv[2])
+create_map(x, y)
