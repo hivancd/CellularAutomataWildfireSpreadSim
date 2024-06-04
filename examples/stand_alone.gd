@@ -15,6 +15,9 @@ func _on_button_compile_pressed():
 		m=1
 	
 	$CellularAutomata2D._reinit_matrix(m)
+	var direction = $CellularAutomata2D.Wind
+	var pos = $HBoxToolbar/HBoxContainer/Sprite2D.position
+	$HBoxToolbar/HBoxContainer/Sprite2D.look_at(pos+direction)	
 	
 	var init_code = $VSplitContainer/StandAlone/VBoxCode/TextEditInit .text
 	var exec_code = $VSplitContainer/StandAlone/VBoxCode/TextEditExec.text

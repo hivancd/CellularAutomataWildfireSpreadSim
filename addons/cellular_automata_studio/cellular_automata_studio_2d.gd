@@ -22,6 +22,8 @@ var nb_passes		: int = 2
 ## Workspace Size Y, usually it matches the y size of your Sprite2D image
 @export var WSY				: int = 128
 
+@export var Wind = Vector2()
+
 ## Drag and drop your Sprite2D here.
 @export var display_in:Node
 #var matrix_future:Sprite2D
@@ -122,12 +124,14 @@ layout(binding = 0) buffer Params {
 
 """
 
-	var nb_buffers : int = 3
+	var nb_buffers : int = 4
 
 	# Create GLSL Header
 	GLSL_header += """
 uint WSX="""+str(WSX)+""";"""+"""
 uint WSY="""+str(WSY)+""";
+float WindX=float("""+str(Wind.x)+""");
+float WindY=float("""+str(Wind.y)+""");
 """
 
 	GLSL_header += """
@@ -145,7 +149,13 @@ layout(binding = 2) buffer Data1 {
 
 	GLSL_header += """
 layout(binding = 3) buffer Data2 {
-	int data_count[];
+	float data_values[];
+};
+
+"""
+	GLSL_header += """
+layout(binding = 4) buffer Data3 {
+	float random_values[];
 };
 
 """
@@ -279,7 +289,7 @@ void main() {
 		uniform_params.binding = 0 # this needs to match the "binding" in our shader file
 		uniform_params.add_id(buffer_params)
 		
-		var nb_uniforms : int = 3
+		var nb_uniforms : int = 4
 		for b in nb_uniforms:
 			var uniform = RDUniform.new()
 			uniform.uniform_type = RenderingDevice.UNIFORM_TYPE_STORAGE_BUFFER
@@ -380,39 +390,40 @@ func _update_uniforms():
 func _reinit_matrix(m:int):
 	# Buffers from/for data (Sprite2D)
 	var input :PackedInt32Array = PackedInt32Array()
-	var inputc :PackedInt32Array = PackedInt32Array()
+	var inputc :PackedFloat32Array = PackedFloat32Array()
+	var inputrand :PackedFloat32Array = PackedFloat32Array()
 	
 	var loaded = false
-	var data = ""
+	var data=""
+	#seed(666)
 	
 	for i in range(WSX):
 		for j in range(WSY):
+			inputc.append(float(0))
+			inputrand.append(randf())
 			if m==0:
 				input.append(0x00000000)
-				inputc.append(0)
 			if m==1:
 				input.append(randi())
-				inputc.append(0)
 			if m==2:
 				if not loaded:
 					OS.execute("python",["./terrain_generator/generator.py", str(WSX), str(WSY)])
 					OS.execute("python3",["./terrain_generator/generator.py", str(WSX), str(WSY)])
 					data = FileAccess.open("res://map.txt", FileAccess.READ).get_as_text()
 					loaded = true
-				input.append(int(data[i+j*WSX]))
-				inputc.append(0)
+				input.append(int(data[(i+j*WSX)%data.length()]))
 			if m==3:
 				if not loaded:
 					data = FileAccess.open("res://map.txt", FileAccess.READ).get_as_text()
 					loaded = true
-				input.append(int(data[i+j*WSX]))
-				inputc.append(0)
-				  
+				input.append(int(data[(i+j*WSX)%data.length()]))
 	var input_bytes :PackedByteArray = input.to_byte_array()
 	var inputc_bytes :PackedByteArray = inputc.to_byte_array()
+	var inputrand_bytes :PackedByteArray = inputrand.to_byte_array()
 	
 	buffers[0]=(rd.storage_buffer_create(input_bytes.size(), input_bytes))
 	buffers[2]=(rd.storage_buffer_create(inputc_bytes.size(), inputc_bytes))
+	buffers[3]=(rd.storage_buffer_create(inputrand_bytes.size(), inputrand_bytes))
 	
 	# Uniform
 	
@@ -426,6 +437,11 @@ func _reinit_matrix(m:int):
 	uniform2.binding = 3 # this needs to match the "binding" in our shader file
 	uniform2.add_id(buffers[2])
 	bindings[3] = uniform2
+	var uniform3 = RDUniform.new()
+	uniform3.uniform_type = RenderingDevice.UNIFORM_TYPE_STORAGE_BUFFER
+	uniform3.binding = 4 # this needs to match the "binding" in our shader file
+	uniform3.add_id(buffers[3])
+	bindings[4] = uniform3
 	# Set the new values from the CPU to the GPU
 	# Note: when changing the uniform set, use the same bindings Array (do not create a new Array)
 	uniform_set = rd.uniform_set_create(bindings, shader, 0)

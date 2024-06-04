@@ -1,8 +1,9 @@
-[gd_scene load_steps=15 format=3 uid="uid://cp4pyravsv5lt"]
+[gd_scene load_steps=16 format=3 uid="uid://cp4pyravsv5lt"]
 
 [ext_resource type="Script" path="res://addons/cellular_automata_studio/cellular_automata_studio_2d.gd" id="1_g2lpm"]
 [ext_resource type="Script" path="res://examples/stand_alone.gd" id="1_k7f4v"]
 [ext_resource type="Script" path="res://addons/cellular_automata_studio/string_color.gd" id="2_6c80k"]
+[ext_resource type="Texture2D" uid="uid://bwgxhmdwejss6" path="res://wind_indicator.png" id="2_ht7h5"]
 
 [sub_resource type="CodeHighlighter" id="CodeHighlighter_diay8"]
 number_color = Color(1, 1, 0.501961, 1)
@@ -122,10 +123,15 @@ tooltip_text = "Execute your code"
 theme_override_font_sizes/font_size = 18
 text = "Play / Pause"
 
+[node name="Sprite2D" type="Sprite2D" parent="HBoxToolbar/HBoxContainer"]
+position = Vector2(800, 27)
+scale = Vector2(1.03125, 0.785714)
+texture = ExtResource("2_ht7h5")
+
 [node name="LabelTitle" type="Label" parent="HBoxToolbar"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 18
-text = " Cellular Automata Studio (standalone version 1.0) "
+text = " CA Studio (standalone v1.0) "
 
 [node name="VSplitContainer" type="VSplitContainer" parent="."]
 layout_mode = 2
@@ -145,16 +151,27 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_font_sizes/font_size = 18
-text = "if (present_state==0)
-	future_state=ground;
-if (present_state==1)
+text = "if (present_state==1)
+	future_state=ground; 
+if (present_state==2)
 	future_state=water;
-if (present_state==2){
+if (present_state==3){
+	future_state=forest;
+	data_values[p] = forest_dur;}
+if (present_state==4 || present_state==5){
 	future_state=grass;
-	data_count[p] = 37;}
+	data_values[p] = grass_dur;}
 if (x==128 && y==115){
 	future_state=fire;
-	data_count[p]=38;}"
+	data_values[p]=float(0);}
+if (x>=0 && x<=0+5)
+	future_state=ashes;
+if (y>=0 && y<=0+5)
+	future_state=ashes;
+if (x<=WSX && x>=WSX-5)
+	future_state=ashes;
+if (y<=WSY && y>=WSY-5)
+	future_state=ashes;"
 placeholder_text = "// INITIALISATION CODE (step = 0)
 // You will use the following variables:
 //    uint WSX, WSY (global WorkSpace in X and Y)
@@ -170,23 +187,18 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 size_flags_stretch_ratio = 2.0
 theme_override_font_sizes/font_size = 18
-text = "//EXEC
-int grassh_count = 37;
-int fire_duration = 1000;
-
-if (present_state==grass){
-	if (data_count[p]<=0)
-		{future_state=fire;
-		data_count[p]=fire_duration;}
+text = "if (present_state==fire){
+	if (fire_intens(data_values[p])<=0)
+		future_state=ashes;
 	else
-		data_count[p]=data_count[p]-int(nb_neighbors_8(x,y,fire));
+		data_values[p]=data_values[p]+min(0.0000001*temperature(x, y, 1),0.023);
 }
-
-if (present_state==fire)
-	if (data_count[p]<=0){
-	future_state=ashes;}
-	else data_count[p]=data_count[p]-1;
-"
+if (present_state==grass||present_state==forest){
+	if (data_values[p]<=0)
+		future_state=fire;
+	else
+		data_values[p] = data_values[p] - temperature(x, y, 4);
+}"
 placeholder_text = "// EXECUTION CODE (step >= 1)
 // You will use the following variables:
 //    uint WSX, WSY (global WorkSpace in X and Y)
@@ -202,6 +214,38 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 size_flags_stretch_ratio = 2.0
 theme_override_font_sizes/font_size = 18
+text = "float grass_dur = 11.0;
+float forest_dur = 15.0;
+float rf=0.23;
+
+float fire_intens(float val){
+float rett = -1*((val-2)*(val-2))/7+1;
+if (rett>0)
+	return rett ;
+else
+	return 0;
+}
+
+float temperature(uint x,uint y, int k) {
+	float temp = 0.0;
+	uint p = x + y * WSX;
+	for(int i = int(x)-k; i <= int(x)+k; i++) {
+		uint ii = uint((i+int(WSX))) % WSX;
+		for(int j = int(y)-k; j <= int(y)+k; j++) {
+			uint jj = uint((j+int(WSY))) % WSY;
+			uint kk = ii + jj * WSX;
+			if(data_present[kk] == fire){
+				float distance = sqrt((float(x)-float(i))*(float(x)-float(i))+
+										(float(y)-float(j))*(float(y)-float(j)));
+				float cosin = (WindX*(float(x)-float(i)) + WindY*(float(y)-float(j))) / 
+										(sqrt(WindX*WindX+WindY*WindY)*
+										distance);
+				float intens = fire_intens(data_values[kk]);
+				temp=temp + random_values[p]*rf+intens*((cosin+1)/2)-0.41*distance/(sqrt(2)*k);}
+		}
+	}
+	return temp;
+}"
 placeholder_text = "// FUNCTIONS CODE
 // Write all your functions here in GLSL
 // You can use the following global variables:
@@ -244,10 +288,9 @@ text = "Output :
 
 [node name="CellularAutomata2D" type="Node" parent="." node_paths=PackedStringArray("display_in")]
 script = ExtResource("1_g2lpm")
-print_step = true
-pause = true
 WSX = 256
 WSY = 256
+Wind = Vector2(-1, -1)
 display_in = NodePath("../VSplitContainer/StandAlone/TextureRect")
 cell_states = Array[Object]([SubResource("Resource_hwxnk"), SubResource("Resource_l3xlw"), SubResource("Resource_skgpx"), SubResource("Resource_gmqwc"), SubResource("Resource_wcrw8"), SubResource("Resource_eltdg")])
 init_code = "
