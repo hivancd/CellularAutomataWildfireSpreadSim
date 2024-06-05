@@ -1,0 +1,71 @@
+//INIT
+if (present_state==1)
+	future_state=ground; 
+if (present_state==2)
+	future_state=water;
+if (present_state==3){
+	future_state=forest;
+	data_values[p] = forest_dur;}
+if (present_state==4 || present_state==5){
+	future_state=grass;
+	data_values[p] = grass_dur;}
+if (x==128 && y==115){
+	future_state=fire;
+	data_values[p]=float(0);}
+if (x>=0 && x<=0+5)
+	future_state=ashes;
+if (y>=0 && y<=0+5)
+	future_state=ashes;
+if (x<=WSX && x>=WSX-5)
+	future_state=ashes;
+if (y<=WSY && y>=WSY-5)
+	future_state=ashes;
+
+//EXEC
+if (present_state==fire){
+	if (fire_intens(data_values[p])<=0)
+		future_state=ashes;
+	else
+		data_values[p]=data_values[p]+0.031;
+}
+if (present_state==grass||present_state==forest){
+	if (data_values[p]<=0){
+		future_state=fire;
+		data_values[p]=0;}
+	else
+		data_values[p] = data_values[p] - temperature(x, y, 2);
+}
+
+//FUNC
+float grass_dur = 27.7;
+float forest_dur = 43.3;
+vec2 wind = vec2(WindX, WindY);
+float wind_speed = 30.0;
+
+float fire_intens(float val){
+float rett = -1*((val-2)*(val-2))/7+1;
+if (rett>0)
+	return rett ;
+else
+	return 0;
+}
+
+float temperature(uint x,uint y, int k) {
+	float temp = 0.0;
+	uint p = x + y * WSX;
+	for(int i = int(x)-k; i <= int(x)+k; i++) {
+		uint ii = uint((i+int(WSX))) % WSX;
+		for(int j = int(y)-k; j <= int(y)+k; j++) {
+			uint jj = uint((j+int(WSY))) % WSY;
+			uint kk = ii + jj * WSX;
+			if(data_present[kk] == fire){
+				vec2 pos = vec2(float(x)-float(i), float(y)-float(j));
+				float cosine = dot(wind, pos)/(sqrt(dot(wind, wind))*sqrt(dot(pos, pos)));
+				float intens = fire_intens(data_values[kk]);	
+				float val = exp(0.1783*wind_speed*cosine);
+				temp = temp + intens * val;
+				}		
+		}
+	}
+		return temp;
+}
