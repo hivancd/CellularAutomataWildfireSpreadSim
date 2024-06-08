@@ -2,7 +2,7 @@ extends Node
 class_name CellularAutomata2D
 
 var current_pass 	: int = 0
-
+var fire_queue : PackedVector2Array
 #region ComputeShaderStudio
 
 var GLSL_header = ""
@@ -22,7 +22,8 @@ var nb_passes		: int = 2
 ## Workspace Size Y, usually it matches the y size of your Sprite2D image
 @export var WSY				: int = 128
 
-@export var Wind = Vector2()
+var wind_angle : float = 0.0
+var wind_speed : float = 0.0
 
 ## Drag and drop your Sprite2D here.
 @export var display_in:Node
@@ -120,9 +121,14 @@ layout(local_size_x = 8, local_size_y = 8, local_size_z = 1) in;
 layout(binding = 0) buffer Params {
 	int step;
 	int current_pass;
+	int sfx;
+	int sfy;
+	float wind_angle;
+	float wind_speed;
 };
 
 """
+
 
 	var nb_buffers : int = 4
 
@@ -130,8 +136,6 @@ layout(binding = 0) buffer Params {
 	GLSL_header += """
 uint WSX="""+str(WSX)+""";"""+"""
 uint WSY="""+str(WSY)+""";
-float WindX=float("""+str(Wind.x)+""");
-float WindY=float("""+str(Wind.y)+""");
 """
 
 	GLSL_header += """
@@ -159,6 +163,7 @@ layout(binding = 4) buffer Data3 {
 };
 
 """
+
 
 	var states_code : String = "" # States of cells
 	for s in cell_states:
@@ -262,10 +267,24 @@ void main() {
 	# *********************
 	if buffers_init == false:
 		# Buffer for current_pass
-		var input_params :PackedInt32Array = PackedInt32Array()
-		input_params.append(step)
-		input_params.append(current_pass)
-		var input_params_bytes := input_params.to_byte_array()
+		var input_paramsI :PackedInt32Array = PackedInt32Array()
+		var input_paramsII :PackedFloat32Array = PackedFloat32Array()
+		input_paramsI.append(step)
+		input_paramsI.append(current_pass)
+		
+		if fire_queue.size()>0:
+			input_paramsI.append(int(fire_queue[0].x))
+			input_paramsI.append(int(fire_queue[0].y))
+		else:
+			input_paramsI.append(-1)
+			input_paramsI.append(-1)
+			
+		input_paramsII.append(wind_angle)
+		input_paramsII.append(wind_speed)
+		var input_params_bytes := input_paramsI.to_byte_array()
+		var input_paramsII_bytes := input_paramsII.to_byte_array()
+		input_params_bytes.append_array(input_paramsII_bytes)
+		# Create a GPU Buffer from the CPU one
 		buffer_params = rd.storage_buffer_create(input_params_bytes.size(), input_params_bytes)
 		
 		# Buffers from/for data (Sprite2D)
@@ -368,13 +387,27 @@ func _process(_delta):
 ## Pass the interesting values from CPU to GPU
 func _update_uniforms():
 	# Create a CPU Buffer for current_pass
-	var input_params :PackedInt32Array = PackedInt32Array()
-	input_params.append(step)
-	input_params.append(current_pass)
-	var input_params_bytes := input_params.to_byte_array()
-	# Create a GPU Buffer from the CPU one
+	var input_paramsI :PackedInt32Array = PackedInt32Array()
+	input_paramsI.append(step)
+	var input_paramsII :PackedFloat32Array = PackedFloat32Array()
+	input_paramsI.append(current_pass)
+
+	if fire_queue.size()>0:
+		input_paramsI.append(int(fire_queue[0].x))
+		input_paramsI.append(int(fire_queue[0].y))
+		fire_queue.remove_at(0)
+	else:
+		input_paramsI.append(-1)
+		input_paramsI.append(-1)
+		
+	input_paramsII.append(wind_angle)
+	input_paramsII.append(wind_speed)
+	var input_params_bytes := input_paramsI.to_byte_array()
+	var input_paramsII_bytes := input_paramsII.to_byte_array()
+	input_params_bytes.append_array(input_paramsII_bytes)
+		# Create a GPU Buffer from the CPU one
 	buffer_params = rd.storage_buffer_create(input_params_bytes.size(), input_params_bytes)
-	
+		
 	# Set the new buffer thanks to a new uniform between the CPU and the GPU
 	uniform_params = RDUniform.new()
 	uniform_params.uniform_type = RenderingDevice.UNIFORM_TYPE_STORAGE_BUFFER

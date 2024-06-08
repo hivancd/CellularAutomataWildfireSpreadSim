@@ -64,6 +64,8 @@ color = Color(0.0807833, 0.0807833, 0.0807833, 1)
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_left = 2.0
+offset_right = 2.0
 grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 3
@@ -82,7 +84,7 @@ size_flags_horizontal = 3
 layout_mode = 2
 theme_override_font_sizes/font_size = 18
 item_count = 4
-selected = 1
+selected = 3
 popup/item_0/text = "Blank grid"
 popup/item_0/id = 0
 popup/item_1/text = "Random grid"
@@ -91,18 +93,6 @@ popup/item_2/text = "Procedural"
 popup/item_2/id = 2
 popup/item_3/text = "Custom"
 popup/item_3/id = 3
-
-[node name="OptionButton2" type="OptionButton" parent="HBoxToolbar/HBoxContainer"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 18
-item_count = 3
-selected = 0
-popup/item_0/text = "INIT"
-popup/item_0/id = 0
-popup/item_1/text = "EXEC"
-popup/item_1/id = 1
-popup/item_2/text = "FUNC"
-popup/item_2/id = 2
 
 [node name="ButtonCompile" type="Button" parent="HBoxToolbar/HBoxContainer"]
 layout_mode = 2
@@ -114,19 +104,66 @@ custom_minimum_size = Vector2(48, 48)
 layout_mode = 2
 tooltip_text = "Execute one step of your code"
 theme_override_font_sizes/font_size = 18
-text = "Step / Pause"
+text = "> / ll"
 
 [node name="ButtonExec" type="Button" parent="HBoxToolbar/HBoxContainer"]
 custom_minimum_size = Vector2(48, 48)
 layout_mode = 2
 tooltip_text = "Execute your code"
 theme_override_font_sizes/font_size = 18
-text = "Play / Pause"
+text = ">> / ll"
 
-[node name="Sprite2D" type="Sprite2D" parent="HBoxToolbar/HBoxContainer"]
-position = Vector2(800, 27)
-scale = Vector2(1.03125, 0.785714)
+[node name="Sprite2D" type="Sprite2D" parent="HBoxToolbar"]
+position = Vector2(503, 26)
+scale = Vector2(1.03125, 1.08538)
 texture = ExtResource("2_ht7h5")
+
+[node name="Label" type="Label" parent="HBoxToolbar"]
+layout_mode = 2
+text = "WIND"
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxToolbar"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="HBoxToolbar/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="HBoxToolbar/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "angle"
+
+[node name="WindAngle" type="HSlider" parent="HBoxToolbar/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(180, 23)
+layout_mode = 2
+max_value = 6.283
+step = 0.001
+tick_count = 9
+ticks_on_borders = true
+
+[node name="AngleValue" type="Label" parent="HBoxToolbar/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+text = "0 deg"
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="HBoxToolbar/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="HBoxToolbar/VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+text = "speed"
+
+[node name="WindSpeed" type="HSlider" parent="HBoxToolbar/VBoxContainer/HBoxContainer2"]
+custom_minimum_size = Vector2(180, 23)
+layout_mode = 2
+max_value = 31.0
+step = 0.1
+tick_count = 11
+ticks_on_borders = true
+
+[node name="SpeedValue" type="Label" parent="HBoxToolbar/VBoxContainer/HBoxContainer2"]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+text = "0 mph"
 
 [node name="LabelTitle" type="Label" parent="HBoxToolbar"]
 layout_mode = 2
@@ -141,12 +178,12 @@ size_flags_vertical = 3
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="VBoxCode" type="VBoxContainer" parent="VSplitContainer/StandAlone"]
+[node name="TabContainer" type="TabContainer" parent="VSplitContainer/StandAlone"]
+custom_minimum_size = Vector2(384, 0)
 layout_mode = 2
-size_flags_horizontal = 3
 
-[node name="TextEditInit" type="TextEdit" parent="VSplitContainer/StandAlone/VBoxCode"]
-custom_minimum_size = Vector2(128, 256)
+[node name="INIT" type="TextEdit" parent="VSplitContainer/StandAlone/TabContainer"]
+custom_minimum_size = Vector2(640, 256)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -161,9 +198,6 @@ if (present_state==3){
 if (present_state==4 || present_state==5){
 	future_state=grass;
 	data_values[p] = grass_dur;}
-if (x==128 && y==115){
-	future_state=fire;
-	data_values[p]=float(0);}
 if (x>=0 && x<=0+5)
 	future_state=ashes;
 if (y>=0 && y<=0+5)
@@ -180,7 +214,7 @@ placeholder_text = "// INITIALISATION CODE (step = 0)
 //    int future_state (the new cell state)"
 syntax_highlighter = SubResource("CodeHighlighter_diay8")
 
-[node name="TextEditExec" type="TextEdit" parent="VSplitContainer/StandAlone/VBoxCode"]
+[node name="EXEC" type="TextEdit" parent="VSplitContainer/StandAlone/TabContainer"]
 visible = false
 layout_mode = 2
 size_flags_horizontal = 3
@@ -188,42 +222,43 @@ size_flags_vertical = 3
 size_flags_stretch_ratio = 2.0
 theme_override_font_sizes/font_size = 18
 text = "if (present_state==fire){
-	if (fire_intens(data_values[p])<=0)
+	if (fire_tmp(data_values[p])<=0)
 		future_state=ashes;
 	else
-		data_values[p]=data_values[p]+min(0.0000001*temperature(x, y, 1),0.023);
+		data_values[p]+=0.083;
 }
 if (present_state==grass||present_state==forest){
 	if (data_values[p]<=0)
 		future_state=fire;
 	else
-		data_values[p] = data_values[p] - temperature(x, y, 4);
-}"
+		data_values[p] -= temperature(x, y, 3);
+}
+
+if (x==sfx && y==sfy){
+	future_state=fire;
+	data_values[p]=float(0);}"
 placeholder_text = "// EXECUTION CODE (step >= 1)
 // You will use the following variables:
 //    uint WSX, WSY (global WorkSpace in X and Y)
 //    uint x,y,p (cell position)
 //    int present_state (current cell state. Do not modify)
 //    int future_state (the new cell state)"
+scroll_vertical = 16.0
 syntax_highlighter = SubResource("CodeHighlighter_1sujs")
 
-[node name="TextEditFunc" type="TextEdit" parent="VSplitContainer/StandAlone/VBoxCode"]
+[node name="FUNC" type="TextEdit" parent="VSplitContainer/StandAlone/TabContainer"]
 visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 size_flags_stretch_ratio = 2.0
 theme_override_font_sizes/font_size = 18
-text = "float grass_dur = 11.0;
-float forest_dur = 15.0;
-float rf=0.23;
+text = "float grass_dur = 31.0;
+float forest_dur = 45.0;
+vec2 wind = vec2(cos(wind_angle), -sin(wind_angle));
 
-float fire_intens(float val){
-float rett = -1*((val-2)*(val-2))/7+1;
-if (rett>0)
-	return rett ;
-else
-	return 0;
+float fire_tmp(float val){
+return exp(-(val-0.7)*(val-0.7));
 }
 
 float temperature(uint x,uint y, int k) {
@@ -235,13 +270,15 @@ float temperature(uint x,uint y, int k) {
 			uint jj = uint((j+int(WSY))) % WSY;
 			uint kk = ii + jj * WSX;
 			if(data_present[kk] == fire){
-				float distance = sqrt((float(x)-float(i))*(float(x)-float(i))+
-										(float(y)-float(j))*(float(y)-float(j)));
-				float cosin = (WindX*(float(x)-float(i)) + WindY*(float(y)-float(j))) / 
-										(sqrt(WindX*WindX+WindY*WindY)*
-										distance);
-				float intens = fire_intens(data_values[kk]);
-				temp=temp + random_values[p]*rf+intens*((cosin+1)/2)-0.41*distance/(sqrt(2)*k);}
+				vec2 posit = vec2(float(x)-float(i), float(y)-float(j));
+				float cosine = dot(wind, posit)/sqrt(dot(posit, posit));
+				float rel_temp = fire_tmp(data_values[kk]);
+				temp+= rel_temp*exp(0.1783*wind_speed*cosine);
+				}
+			if(data_present[kk] == water){
+				vec2 posit = vec2(float(x)-float(i), float(y)-float(j));
+				temp*= sqrt(dot(posit, posit))/(13*sqrt(2));
+				}
 		}
 	}
 	return temp;
@@ -258,7 +295,13 @@ placeholder_text = "// FUNCTIONS CODE
 //       return my_state_2;
 // }
 "
+scroll_vertical = 30.0
 syntax_highlighter = SubResource("CodeHighlighter_8t2bd")
+
+[node name="VBoxCode" type="VBoxContainer" parent="VSplitContainer/StandAlone"]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 3
 
 [node name="TextureRect" type="TextureRect" parent="VSplitContainer/StandAlone"]
 custom_minimum_size = Vector2(256, 256)
@@ -290,7 +333,6 @@ text = "Output :
 script = ExtResource("1_g2lpm")
 WSX = 256
 WSY = 256
-Wind = Vector2(2.025, 0)
 display_in = NodePath("../VSplitContainer/StandAlone/TextureRect")
 cell_states = Array[Object]([SubResource("Resource_hwxnk"), SubResource("Resource_l3xlw"), SubResource("Resource_skgpx"), SubResource("Resource_gmqwc"), SubResource("Resource_wcrw8"), SubResource("Resource_eltdg")])
 init_code = "
@@ -310,7 +352,11 @@ exec_code = "
 //    int future_state (the new cell state)
 "
 
-[connection signal="item_selected" from="HBoxToolbar/HBoxContainer/OptionButton2" to="." method="_on_option_button_2_item_selected"]
 [connection signal="pressed" from="HBoxToolbar/HBoxContainer/ButtonCompile" to="." method="_on_button_compile_pressed"]
 [connection signal="pressed" from="HBoxToolbar/HBoxContainer/ButtonStep" to="CellularAutomata2D" method="_on_button_step"]
 [connection signal="pressed" from="HBoxToolbar/HBoxContainer/ButtonExec" to="CellularAutomata2D" method="_on_button_play"]
+[connection signal="value_changed" from="HBoxToolbar/VBoxContainer/HBoxContainer/WindAngle" to="." method="_on_h_slider_value_changed"]
+[connection signal="value_changed" from="HBoxToolbar/VBoxContainer/HBoxContainer2/WindSpeed" to="." method="_on_wind_speed_value_changed"]
+[connection signal="gui_input" from="VSplitContainer/StandAlone/TextureRect" to="." method="_on_texture_rect_gui_input"]
+[connection signal="mouse_entered" from="VSplitContainer/StandAlone/TextureRect" to="." method="_on_texture_rect_mouse_entered"]
+[connection signal="mouse_exited" from="VSplitContainer/StandAlone/TextureRect" to="." method="_on_texture_rect_mouse_exited"]

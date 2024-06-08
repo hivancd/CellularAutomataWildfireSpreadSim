@@ -85,7 +85,7 @@ def create_map_ppm(filename, w, h, seed):
 
 def create_map_txt(f_name):
     im = Image.open(f_name + ".ppm")  # Can be many different formats.
-    # im.save("map.png")
+    im.save("map.png")
     array_result = []
     for j in range(0, im.size[1]):
         for i in range(0, im.size[0]):
