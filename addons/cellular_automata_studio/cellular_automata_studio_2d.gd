@@ -24,6 +24,7 @@ var nb_passes		: int = 2
 
 var wind_angle : float = 0.0
 var wind_speed : float = 0.0
+var state = {}
 
 ## Drag and drop your Sprite2D here.
 @export var display_in:Node
@@ -163,7 +164,7 @@ layout(binding = 4) buffer Data3 {
 };
 
 """
-
+	#print("0xf19b00ff".hex_to_int())
 
 	var states_code : String = "" # States of cells
 	for s in cell_states:
@@ -178,6 +179,16 @@ layout(binding = 4) buffer Data3 {
 		states_code += line
 	GLSL_header += states_code
 
+	for s in cell_states:
+		var col_html:String = s.color.to_html(true)
+		var R:String = col_html.substr(0,2)
+		var G:String = col_html.substr(2,2)
+		var B:String = col_html.substr(4,2)
+		var A:String = col_html.substr(6,2)
+		var cll = "0x"+A+B+G+R
+		state[s.text]=cll.hex_to_int()
+		#state[s.text]=(col_html).hex_to_int()
+			
 	GLSL_header += """
 uint nb_neighbors_4(uint x,uint y, int state) {
 	uint nb = 0;
@@ -286,7 +297,6 @@ void main() {
 		input_params_bytes.append_array(input_paramsII_bytes)
 		# Create a GPU Buffer from the CPU one
 		buffer_params = rd.storage_buffer_create(input_params_bytes.size(), input_params_bytes)
-		
 		# Buffers from/for data (Sprite2D)
 		for b in nb_buffers:
 			var input :PackedInt32Array = PackedInt32Array()
@@ -374,6 +384,33 @@ func compute():
 	rd.submit()
 	rd.sync()
 	
+	if step%256==0 and step!=0:
+		var data = rd.buffer_get_data(buffers[0])
+		var intMatrix = data.to_int32_array()
+		var fire = intMatrix[0]
+		var ashes = intMatrix[1]
+		var grass = intMatrix[2]
+		var forest = intMatrix[3]
+		
+		var fire_count = 0
+		for xx in intMatrix:
+			#print(xx)
+			match xx:
+				fire:
+					xx=0
+					fire_count += 1
+				ashes:
+					xx=1
+				grass:
+					xx=2
+				forest:
+					xx=3
+				_:
+					xx=4
+		
+		if fire_count <=1:
+			print("SIMULATION TERMINATED")
+			pause=true
 	# Update step and current_passe
 	current_pass = (current_pass + 1) % nb_passes
 	if current_pass == 0:
@@ -383,6 +420,7 @@ func _process(_delta):
 	if pause == false:
 		compute()
 		display_all_values()
+		
 
 ## Pass the interesting values from CPU to GPU
 func _update_uniforms():
@@ -447,7 +485,7 @@ func _reinit_matrix(m:int):
 				input.append(int(data[(i+j*WSX)%data.length()]))
 			if m==3:
 				if not loaded:
-					data = FileAccess.open("res://map.txt", FileAccess.READ).get_as_text()
+					data = FileAccess.open("res://IslaJuventud.txt", FileAccess.READ).get_as_text()
 					loaded = true
 				input.append(int(data[(i+j*WSX)%data.length()]))
 	var input_bytes :PackedByteArray = input.to_byte_array()

@@ -27,6 +27,18 @@ def cos_similarity(v1, v2):
 def distance(v1, v2):
     return sum([(v1[i] - v2[i]) ** 2 for i in range(len(v1))]) ** 0.5
 
+def get_base_color_i(pixel):
+    max=-1
+    for i in range(3):
+        if pixel[i]>max:
+            max = pixel[i]
+            closest_color=i+1
+    if closest_color==2:
+        closest_color=3
+    elif closest_color==3:
+        closest_color=2
+
+    return closest_color
 
 def get_base_color(pixel):
     base_colors = [
@@ -101,8 +113,18 @@ def create_map(w, h, seed=None):
     create_map_ppm("map", w, h, seed)
     create_map_txt("map")
 
+if __name__=="__main__":
+    # im = Image.open("./CellularAutomataWildfireSpreadSim/terrain_generator/Isla_de_la_Juventud.jpg")  # Can be many different formats.
+    # array_result = []
+    # for i in [int(h*(922/256))for h in range(256)]:
+    #     for j in [int(h*(922/256))for h in range(256)]:
+    #         array_result.append(get_base_color_i(im.getpixel((i, j))))
 
-print("asdasd")
-x = int(sys.argv[1])
-y = int(sys.argv[2])
-create_map(x, y)
+    # file = open("IslaJuventud" + ".txt", "w")
+
+    # for line in array_result:
+    #     file.write(str(line))
+
+    x = int(sys.argv[1])
+    y = int(sys.argv[2])
+    create_map(x, y)

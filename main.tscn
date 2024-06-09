@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://cp4pyravsv5lt"]
+[gd_scene load_steps=17 format=3 uid="uid://cp4pyravsv5lt"]
 
 [ext_resource type="Script" path="res://addons/cellular_automata_studio/cellular_automata_studio_2d.gd" id="1_g2lpm"]
 [ext_resource type="Script" path="res://examples/stand_alone.gd" id="1_k7f4v"]
@@ -59,6 +59,11 @@ color = Color(0.392157, 0.596078, 0, 1)
 script = ExtResource("2_6c80k")
 text = "ashes"
 color = Color(0.0807833, 0.0807833, 0.0807833, 1)
+
+[sub_resource type="Resource" id="Resource_c6n3c"]
+script = ExtResource("2_6c80k")
+text = "bedrock"
+color = Color(0, 0, 0, 1)
 
 [node name="VBoxMain" type="VBoxContainer"]
 anchors_preset = 15
@@ -198,14 +203,26 @@ if (present_state==3){
 if (present_state==4 || present_state==5){
 	future_state=grass;
 	data_values[p] = grass_dur;}
+///////////////
 if (x>=0 && x<=0+5)
-	future_state=ashes;
+	future_state=bedrock;
 if (y>=0 && y<=0+5)
-	future_state=ashes;
+	future_state=bedrock;
 if (x<=WSX && x>=WSX-5)
-	future_state=ashes;
+	future_state=bedrock;
 if (y<=WSY && y>=WSY-5)
-	future_state=ashes;"
+	future_state=bedrock;
+
+if (x==0){
+if(y==0)
+future_state=fire;
+if(y==0)
+future_state=ashes;
+if(y==0)
+future_state=grass;
+if(y==0)
+future_state=forest;
+}"
 placeholder_text = "// INITIALISATION CODE (step = 0)
 // You will use the following variables:
 //    uint WSX, WSY (global WorkSpace in X and Y)
@@ -236,14 +253,25 @@ if (present_state==grass||present_state==forest){
 
 if (x==sfx && y==sfy){
 	future_state=fire;
-	data_values[p]=float(0);}"
+	data_values[p]=float(0);}
+
+if (y==0){
+if(x==0)
+future_state=fire;
+if(x==1)
+future_state=ashes;
+if(x==2)
+future_state=grass;
+if(x==3)
+future_state=forest;
+}"
 placeholder_text = "// EXECUTION CODE (step >= 1)
 // You will use the following variables:
 //    uint WSX, WSY (global WorkSpace in X and Y)
 //    uint x,y,p (cell position)
 //    int present_state (current cell state. Do not modify)
 //    int future_state (the new cell state)"
-scroll_vertical = 16.0
+scroll_vertical = 27.0
 syntax_highlighter = SubResource("CodeHighlighter_1sujs")
 
 [node name="FUNC" type="TextEdit" parent="VSplitContainer/StandAlone/TabContainer"]
@@ -255,6 +283,7 @@ size_flags_stretch_ratio = 2.0
 theme_override_font_sizes/font_size = 18
 text = "float grass_dur = 31.0;
 float forest_dur = 45.0;
+int fire_amount = 0;
 vec2 wind = vec2(cos(wind_angle), -sin(wind_angle));
 
 float fire_tmp(float val){
@@ -295,7 +324,6 @@ placeholder_text = "// FUNCTIONS CODE
 //       return my_state_2;
 // }
 "
-scroll_vertical = 30.0
 syntax_highlighter = SubResource("CodeHighlighter_8t2bd")
 
 [node name="VBoxCode" type="VBoxContainer" parent="VSplitContainer/StandAlone"]
@@ -334,7 +362,7 @@ script = ExtResource("1_g2lpm")
 WSX = 256
 WSY = 256
 display_in = NodePath("../VSplitContainer/StandAlone/TextureRect")
-cell_states = Array[Object]([SubResource("Resource_hwxnk"), SubResource("Resource_l3xlw"), SubResource("Resource_skgpx"), SubResource("Resource_gmqwc"), SubResource("Resource_wcrw8"), SubResource("Resource_eltdg")])
+cell_states = Array[Object]([SubResource("Resource_hwxnk"), SubResource("Resource_l3xlw"), SubResource("Resource_skgpx"), SubResource("Resource_gmqwc"), SubResource("Resource_wcrw8"), SubResource("Resource_eltdg"), SubResource("Resource_c6n3c")])
 init_code = "
 // INITIALISATION CODE (step = 0)
 // You can use the following variables:
