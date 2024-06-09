@@ -15,6 +15,11 @@ var print_passes:bool = false
 @export var print_generated_code:bool = false
 ## Do not execute compute shader at launch.
 @export var pause:bool = false
+var running_tests :bool = false
+@export var show_tests :bool = false
+var test_ended = true
+@export var samples_distance :int = 10
+var last_test = false
 ## Number of passes (synchronized code) needed.
 var nb_passes		: int = 2
 ## Workspace Size X, usually it matches the x size of your Sprite2D image
@@ -23,6 +28,7 @@ var nb_passes		: int = 2
 @export var WSY				: int = 128
 
 var wind_angle : float = 0.0
+var wind_direction_string :String = ""
 var wind_speed : float = 0.0
 var state = {}
 
@@ -369,7 +375,32 @@ func compute():
 		print("Step="+str(step))
 	if print_passes == true:
 		print(" CurrentPass="+str(current_pass))
+		
+	_update_uniforms()
+	# Prepare the Computer List ############################################
+	var compute_list : int = rd.compute_list_begin()
+	rd.compute_list_bind_compute_pipeline(compute_list, pipeline)
+	rd.compute_list_bind_uniform_set(compute_list, uniform_set, 0)
+	rd.compute_list_dispatch(compute_list, WSX>>3, WSY>>3, 1)
+	rd.compute_list_end()
+	#######################################################################
+
+	# Submit to GPU and wait for sync
+	rd.submit()
+	rd.sync()
 	
+	
+	# Update step and current_passe
+	current_pass = (current_pass + 1) % nb_passes
+	if current_pass == 0:
+		step += 1
+
+func compute_tests():
+	if print_step == true && current_pass%nb_passes == 0:
+		print("Step="+wind_direction_string+str(int(wind_speed))+" "+str(step))
+	if print_passes == true:
+		print(" CurrentPass="+str(current_pass))
+		
 	_update_uniforms()
 	
 	# Prepare the Computer List ############################################
@@ -384,35 +415,54 @@ func compute():
 	rd.submit()
 	rd.sync()
 	
-	if step%128==0:
+	if step%samples_distance==0 and current_pass==(nb_passes-1):
 		var data = rd.buffer_get_data(buffers[0])
 		var intMatrix = data.to_int32_array()
+		
 		var fire = intMatrix[0]
 		var ashes = intMatrix[1]
 		var grass = intMatrix[2]
 		var forest = intMatrix[3]
 		var ground = intMatrix[4]
+		var water = intMatrix[5]
 		
 		var fire_count = 0
-		for xx in intMatrix:
-			#print(xx)
-			match xx:
+		var ashes_count = 0
+		var grass_count = 0
+		var forest_count = 0
+		var ground_count = 0
+		var water_count = 0
+		for value in intMatrix:
+			match value:
 				fire:
 					fire_count += 1
 				ashes:
-					xx=1
+					ashes_count += 1
 				grass:
-					xx=2
+					grass_count += 1					
 				forest:
-					xx=3
+					forest_count +=1
 				ground:
-					xx=3
-				_:
-					xx=4
+					ground_count += 1
+				water:
+					water_count += 1
+					
+		var strValues:PackedStringArray = PackedStringArray()
+		
+		var f = FileAccess.open("res://tests/test"+wind_direction_string+str(int(wind_speed))+".txt",FileAccess.READ_WRITE)
+		f.seek_end()
+		var line = str(step)+", "+str(fire_count-1)+", "+str(ashes_count)+", "+str(grass_count)+", "+str(forest_count)+", "+str(ground_count)+", "+str(water_count)
+		f.store_line(line)
+		f.close()
 		
 		if fire_count <=1 and step!=0:
-			print("SIMULATION TERMINATED")
+			test_ended = true
+			print("SIMULATION "+wind_direction_string+str(int(wind_speed))+" TERMINATED")
 			pause=true
+			if last_test:
+				print("TESTS FINISHED")
+				last_test = false
+				running_tests=false
 	# Update step and current_passe
 	current_pass = (current_pass + 1) % nb_passes
 	if current_pass == 0:
@@ -420,8 +470,13 @@ func compute():
 
 func _process(_delta):
 	if pause == false:
-		compute()
-		display_all_values()
+		if running_tests:
+			compute_tests()
+			if show_tests:
+				display_all_values()
+		else:
+			compute()
+			display_all_values()
 		
 
 ## Pass the interesting values from CPU to GPU
@@ -458,6 +513,7 @@ func _update_uniforms():
 	# Set the new values from the CPU to the GPU
 	# Note: when changing the uniform set, use the same bindings Array (do not create a new Array)
 	uniform_set = rd.uniform_set_create(bindings, shader, 0)
+	
 
 ## Pass the interesting values from CPU to GPU
 func _reinit_matrix(m:int):

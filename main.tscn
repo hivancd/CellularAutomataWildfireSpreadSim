@@ -218,15 +218,25 @@ if (x<=WSX && x>=WSX-5)
 if (y<=WSY && y>=WSY-5)
 	future_state=bedrock;
 
-if (x==0){
-if(y==0)
+if (y==0){
+if(x==0)
 future_state=fire;
-if(y==0)
+if(x==1)
 future_state=ashes;
-if(y==0)
+if(x==2)
 future_state=grass;
-if(y==0)
+if(x==3)
 future_state=forest;
+if(x==4)
+future_state=ground;
+if(x==5)
+future_state=water;
+}
+
+if (x>19 && x < 25){
+	if (y>183 && y <=190)	
+		future_state=fire;
+		data_values[p]=0;
 }"
 placeholder_text = "// INITIALISATION CODE (step = 0)
 // You will use the following variables:
@@ -269,6 +279,10 @@ if(x==2)
 future_state=grass;
 if(x==3)
 future_state=forest;
+if(x==4)
+future_state=ground;
+if(x==5)
+future_state=water;
 }"
 placeholder_text = "// EXECUTION CODE (step >= 1)
 // You will use the following variables:
@@ -285,8 +299,8 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 size_flags_stretch_ratio = 2.0
 theme_override_font_sizes/font_size = 18
-text = "float grass_dur = 3.0;
-float forest_dur = 7.4;
+text = "float grass_dur = 3.3;
+float forest_dur = 8.1;
 vec2 wind = vec2(cos(wind_angle), -sin(wind_angle));
 
 float fire_tmp(float val){
@@ -327,7 +341,6 @@ placeholder_text = "// FUNCTIONS CODE
 //       return my_state_2;
 // }
 "
-scroll_vertical = 30.0
 syntax_highlighter = SubResource("CodeHighlighter_8t2bd")
 
 [node name="VBoxCode" type="VBoxContainer" parent="VSplitContainer/StandAlone"]
@@ -363,6 +376,7 @@ text = "Output :
 
 [node name="CellularAutomata2D" type="Node" parent="." node_paths=PackedStringArray("display_in")]
 script = ExtResource("1_g2lpm")
+show_tests = true
 WSX = 256
 WSY = 256
 display_in = NodePath("../VSplitContainer/StandAlone/TextureRect")

@@ -1,6 +1,8 @@
 import time
 import sys
 import os
+import random
+import math
 
 from modules.short_class_import import BoardBox, Seed
 from modules.decisional import generate_box
@@ -26,7 +28,7 @@ def cos_similarity(v1, v2):
 def distance(v1, v2):
     return sum([(v1[i] - v2[i]) ** 2 for i in range(len(v1))]) ** 0.5
 
-def get_base_color_i(pixel):
+def get_base_color_i(pixel, x,y):
     max=-1
     for i in range(3):
         if pixel[i]>max:
@@ -36,6 +38,11 @@ def get_base_color_i(pixel):
         closest_color=3
     elif closest_color==3:
         closest_color=2
+    
+    if closest_color==3:
+        prob = math.sqrt((x-922*0.5)**2+(y-922*0.35)**2)
+        if random.uniform(0,756.1)>prob:
+            closest_color=4
 
     return closest_color
 
@@ -117,9 +124,9 @@ if __name__=="__main__":
     # array_result = []
     # for i in [int(h*(922/256))for h in range(256)]:
     #     for j in [int(h*(922/256))for h in range(256)]:
-    #         array_result.append(get_base_color_i(im.getpixel((i, j))))
+    #         array_result.append(get_base_color_i(im.getpixel((i, j)),i,j))
 
-    # file = open("IslaJuventud" + ".txt", "w")
+    # file = open("YoungLand" + ".txt", "w")
 
     # for line in array_result:
     #     file.write(str(line))
