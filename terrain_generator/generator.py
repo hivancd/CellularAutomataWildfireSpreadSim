@@ -3,7 +3,6 @@ import sys
 import os
 
 from modules.short_class_import import BoardBox, Seed
-
 from modules.decisional import generate_box
 from modules.encyclopedia_functions import encyclopedia_creation
 from modules.image_creation import write_image_header, write_image_body
