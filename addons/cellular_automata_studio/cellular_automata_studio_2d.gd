@@ -485,7 +485,7 @@ func _reinit_matrix(m:int):
 				input.append(int(data[(i+j*WSX)%data.length()]))
 			if m==3:
 				if not loaded:
-					data = FileAccess.open("res://IslaJuventud.txt", FileAccess.READ).get_as_text()
+					data = FileAccess.open("res://YoungLand.txt", FileAccess.READ).get_as_text()
 					loaded = true
 				input.append(int(data[(i+j*WSX)%data.length()]))
 	var input_bytes :PackedByteArray = input.to_byte_array()

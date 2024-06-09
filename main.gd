@@ -49,4 +49,4 @@ func _on_texture_rect_gui_input(event):
 		var valX=int(($VSplitContainer/StandAlone/TextureRect.get_local_mouse_position().x/$VSplitContainer/StandAlone/TextureRect.size.x)*$CellularAutomata2D.WSX)
 		var valY=int(($VSplitContainer/StandAlone/TextureRect.get_local_mouse_position().y/$VSplitContainer/StandAlone/TextureRect.size.y)*$CellularAutomata2D.WSY)
 		$CellularAutomata2D.fire_queue.append(Vector2(valX,valY))
-		#print($CellularAutomata2D.fire_queue)
+		#print($CellularAutomata2D.fire_queue) 

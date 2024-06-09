@@ -1,7 +1,7 @@
 [gd_scene load_steps=17 format=3 uid="uid://cp4pyravsv5lt"]
 
 [ext_resource type="Script" path="res://addons/cellular_automata_studio/cellular_automata_studio_2d.gd" id="1_g2lpm"]
-[ext_resource type="Script" path="res://examples/stand_alone.gd" id="1_k7f4v"]
+[ext_resource type="Script" path="res://main.gd" id="1_k7f4v"]
 [ext_resource type="Script" path="res://addons/cellular_automata_studio/string_color.gd" id="2_6c80k"]
 [ext_resource type="Texture2D" uid="uid://bwgxhmdwejss6" path="res://wind_indicator.png" id="2_ht7h5"]
 
@@ -92,11 +92,13 @@ item_count = 4
 selected = 3
 popup/item_0/text = "Blank grid"
 popup/item_0/id = 0
+popup/item_0/disabled = true
 popup/item_1/text = "Random grid"
 popup/item_1/id = 1
+popup/item_1/disabled = true
 popup/item_2/text = "Procedural"
 popup/item_2/id = 2
-popup/item_3/text = "Custom"
+popup/item_3/text = "Young Land"
 popup/item_3/id = 3
 
 [node name="ButtonCompile" type="Button" parent="HBoxToolbar/HBoxContainer"]
@@ -271,7 +273,6 @@ placeholder_text = "// EXECUTION CODE (step >= 1)
 //    uint x,y,p (cell position)
 //    int present_state (current cell state. Do not modify)
 //    int future_state (the new cell state)"
-scroll_vertical = 27.0
 syntax_highlighter = SubResource("CodeHighlighter_1sujs")
 
 [node name="FUNC" type="TextEdit" parent="VSplitContainer/StandAlone/TabContainer"]
@@ -281,9 +282,8 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 size_flags_stretch_ratio = 2.0
 theme_override_font_sizes/font_size = 18
-text = "float grass_dur = 31.0;
-float forest_dur = 45.0;
-int fire_amount = 0;
+text = "float grass_dur = 3.0;
+float forest_dur = 7.4;
 vec2 wind = vec2(cos(wind_angle), -sin(wind_angle));
 
 float fire_tmp(float val){
@@ -324,6 +324,7 @@ placeholder_text = "// FUNCTIONS CODE
 //       return my_state_2;
 // }
 "
+scroll_vertical = 30.0
 syntax_highlighter = SubResource("CodeHighlighter_8t2bd")
 
 [node name="VBoxCode" type="VBoxContainer" parent="VSplitContainer/StandAlone"]
