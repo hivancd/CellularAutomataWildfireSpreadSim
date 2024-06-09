@@ -384,20 +384,20 @@ func compute():
 	rd.submit()
 	rd.sync()
 	
-	if step%256==0 and step!=0:
+	if step%128==0:
 		var data = rd.buffer_get_data(buffers[0])
 		var intMatrix = data.to_int32_array()
 		var fire = intMatrix[0]
 		var ashes = intMatrix[1]
 		var grass = intMatrix[2]
 		var forest = intMatrix[3]
+		var ground = intMatrix[4]
 		
 		var fire_count = 0
 		for xx in intMatrix:
 			#print(xx)
 			match xx:
 				fire:
-					xx=0
 					fire_count += 1
 				ashes:
 					xx=1
@@ -405,10 +405,12 @@ func compute():
 					xx=2
 				forest:
 					xx=3
+				ground:
+					xx=3
 				_:
 					xx=4
 		
-		if fire_count <=1:
+		if fire_count <=1 and step!=0:
 			print("SIMULATION TERMINATED")
 			pause=true
 	# Update step and current_passe

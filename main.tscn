@@ -120,14 +120,17 @@ tooltip_text = "Execute your code"
 theme_override_font_sizes/font_size = 18
 text = ">> / ll"
 
-[node name="Sprite2D" type="Sprite2D" parent="HBoxToolbar"]
-position = Vector2(503, 26)
-scale = Vector2(1.03125, 1.08538)
-texture = ExtResource("2_ht7h5")
+[node name="ButtonRunTests" type="Button" parent="HBoxToolbar/HBoxContainer"]
+layout_mode = 2
+text = "Run Tests"
 
 [node name="Label" type="Label" parent="HBoxToolbar"]
 layout_mode = 2
 text = "WIND"
+
+[node name="WindInd" type="TextureRect" parent="HBoxToolbar"]
+layout_mode = 2
+texture = ExtResource("2_ht7h5")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="HBoxToolbar"]
 layout_mode = 2
@@ -384,6 +387,7 @@ exec_code = "
 [connection signal="pressed" from="HBoxToolbar/HBoxContainer/ButtonCompile" to="." method="_on_button_compile_pressed"]
 [connection signal="pressed" from="HBoxToolbar/HBoxContainer/ButtonStep" to="CellularAutomata2D" method="_on_button_step"]
 [connection signal="pressed" from="HBoxToolbar/HBoxContainer/ButtonExec" to="CellularAutomata2D" method="_on_button_play"]
+[connection signal="pressed" from="HBoxToolbar/HBoxContainer/ButtonRunTests" to="." method="_on_button_run_tests_pressed"]
 [connection signal="value_changed" from="HBoxToolbar/VBoxContainer/HBoxContainer/WindAngle" to="." method="_on_h_slider_value_changed"]
 [connection signal="value_changed" from="HBoxToolbar/VBoxContainer/HBoxContainer2/WindSpeed" to="." method="_on_wind_speed_value_changed"]
 [connection signal="gui_input" from="VSplitContainer/StandAlone/TextureRect" to="." method="_on_texture_rect_gui_input"]
