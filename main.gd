@@ -1,6 +1,4 @@
 extends VBoxContainer
-var directions = ["E","NE", "N", "NW", "W","SW", "S", "SE"]
-var speeds = [0, 1, 2, 4, 16, 32]
 
 var speds = []
 var dirs = []
@@ -9,11 +7,11 @@ var dirsname = []
 func _ready():
 	$CellularAutomata2D.pause = true
 	
-	for speed in speeds:
-		for i in range(directions.size()):
+	for speed in $CellularAutomata2D.speeds:
+		for i in range($CellularAutomata2D.directions.size()):
 			dirs.append(i)
 			speds.append(speed)
-			dirsname.append(directions[i])
+			dirsname.append($CellularAutomata2D.directions[i])
 			if speed == 0:
 				break
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -26,8 +24,11 @@ func _process(_delta):
 		var functions_code = $VSplitContainer/StandAlone/TabContainer/FUNC.text
 		
 		$CellularAutomata2D.wind_direction_string=dirsname[0]
-		$CellularAutomata2D.wind_angle = dirs[0] * 2*PI/(directions.size())
+		$CellularAutomata2D.wind_angle = dirs[0] * 2*PI/($CellularAutomata2D.directions.size())
 		$CellularAutomata2D.wind_speed = speds[0]
+		
+		$HBoxToolbar/VBoxContainer/HBoxContainer/WindAngle.value = dirs[0] * 2*PI/($CellularAutomata2D.directions.size())
+		$HBoxToolbar/VBoxContainer/HBoxContainer2/WindSpeed.value = speds[0]
 		
 		dirsname.remove_at(0)
 		dirs.remove_at(0)

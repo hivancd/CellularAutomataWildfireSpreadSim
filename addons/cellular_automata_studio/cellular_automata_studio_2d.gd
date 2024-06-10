@@ -19,7 +19,10 @@ var running_tests :bool = false
 @export var show_tests :bool = false
 var test_ended = true
 @export var samples_distance :int = 10
+@export var directions :PackedStringArray = ["E","NE", "N", "NW", "W","SW", "S", "SE"]
+@export var speeds :PackedFloat32Array = [0, 1, 2, 4, 16, 32]
 var last_test = false
+
 ## Number of passes (synchronized code) needed.
 var nb_passes		: int = 2
 ## Workspace Size X, usually it matches the x size of your Sprite2D image
