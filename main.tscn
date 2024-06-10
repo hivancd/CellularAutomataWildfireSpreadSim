@@ -376,9 +376,12 @@ text = "Output :
 
 [node name="CellularAutomata2D" type="Node" parent="." node_paths=PackedStringArray("display_in")]
 script = ExtResource("1_g2lpm")
+<<<<<<< Updated upstream
 show_tests = true
 directions = ["E", "N", "W", "S"]
 speeds = [0, 10, 25]
+=======
+>>>>>>> Stashed changes
 WSX = 256
 WSY = 256
 display_in = NodePath("../VSplitContainer/StandAlone/TextureRect")
