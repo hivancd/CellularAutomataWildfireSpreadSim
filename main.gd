@@ -37,7 +37,7 @@ func _process(_delta):
 			$CellularAutomata2D.last_test = true
 		
 		var f = FileAccess.open("res://tests/test"+$CellularAutomata2D.wind_direction_string+str(int($CellularAutomata2D.wind_speed))+".txt",FileAccess.WRITE)
-		var line = "step"+", "+"fire_count"+", "+"ashes_count"+", "+"grass_count"+", "+"forest_count"+", "+"ground_count"+", "+"water_count"+", "
+		var line = "step"+","+"fire_count"+","+"ashes_count"+","+"grass_count"+","+"forest_count"+","+"ground_count"+","+"water_count"
 		f.seek_end()
 		f.store_line(line)
 		f.close()

@@ -454,7 +454,7 @@ func compute_tests():
 		
 		var f = FileAccess.open("res://tests/test"+wind_direction_string+str(int(wind_speed))+".txt",FileAccess.READ_WRITE)
 		f.seek_end()
-		var line = str(step)+", "+str(fire_count-1)+", "+str(ashes_count)+", "+str(grass_count)+", "+str(forest_count)+", "+str(ground_count)+", "+str(water_count)
+		var line = str(step)+","+str(fire_count-1)+","+str(ashes_count)+","+str(grass_count)+","+str(forest_count)+","+str(ground_count)+","+str(water_count)
 		f.store_line(line)
 		f.close()
 		

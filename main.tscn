@@ -376,7 +376,6 @@ text = "Output :
 
 [node name="CellularAutomata2D" type="Node" parent="." node_paths=PackedStringArray("display_in")]
 script = ExtResource("1_g2lpm")
-<<<<<<< Updated upstream
 show_tests = true
 WSX = 256
 WSY = 256
