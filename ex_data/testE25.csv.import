@@ -1,0 +1,17 @@
+[remap]
+
+importer="csv_translation"
+type="Translation"
+uid="uid://b8p0rneq608d"
+
+[deps]
+
+files=["res://ex_data/testE25. fire.translation", "res://ex_data/testE25. ashes.translation", "res://ex_data/testE25. grass.translation", "res://ex_data/testE25. forest.translation", "res://ex_data/testE25. ground.translation", "res://ex_data/testE25. water.translation", "res://ex_data/testE25. .translation"]
+
+source_file="res://ex_data/testE25.csv"
+dest_files=["res://ex_data/testE25. fire.translation", "res://ex_data/testE25. ashes.translation", "res://ex_data/testE25. grass.translation", "res://ex_data/testE25. forest.translation", "res://ex_data/testE25. ground.translation", "res://ex_data/testE25. water.translation", "res://ex_data/testE25. .translation"]
+
+[params]
+
+compress=true
+delimiter=0
