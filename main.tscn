@@ -233,8 +233,7 @@ if(x==5)
 future_state=water;
 }
 
-if (x>19 && x < 25){
-	if (y>183 && y <=190)	
+if (x>19 && x < 25 && y>183 && y <=190){	
 		future_state=fire;
 		data_values[p]=0;
 }"
